@@ -8,6 +8,8 @@ import styles from './episode.module.scss'
 import Image from 'next/image'
 import Link from 'next/link'
 import Head from 'next/head'
+import { useContext } from 'react'
+import { PlayerContext } from '../../contexts/playerContext'
 
 type Episode = { 
     id : string,
@@ -17,8 +19,8 @@ type Episode = {
     publishedAt: string,
     durationAsString: string,
     thumbnail: string,
+    description: string,
     file: { duration: number, url: string},
-    description: string
 }
 
 type EpisodeProps = {
@@ -26,7 +28,9 @@ type EpisodeProps = {
 }
 
 export default function Episode({ episode }: EpisodeProps){
-    
+
+    const { episodeList, currentEpisodeIndex, isPlaying, togglePlay, play } = useContext(PlayerContext)
+    const currentEpisode = episodeList[currentEpisodeIndex]
     return(
         <div className={styles.episode}>
             <Head>
@@ -44,8 +48,28 @@ export default function Episode({ episode }: EpisodeProps){
                     src={episode.thumbnail}
                     objectFit="cover"
                     />
-                <button type="button">
-                    <img src="/play.svg" alt="Tocar episodio"/>
+                <button type="button" onClick={() => {
+
+
+                    episodeList.length > 0 ? ()=>{
+                        
+                        if(currentEpisode.id == episode.id){
+                            togglePlay()
+                        } else {
+                            isPlaying ? togglePlay() : play(episode)
+                        }   
+
+                    }
+                    
+                    : play(episode)
+
+                    
+
+                }}>
+                    { isPlaying ? 
+                    <img src="/pause.svg" alt="Pausar episodio"/> :
+                        <img src="/play.svg" alt="Tocar episodio"/>
+                    }
                 </button>
             </div>
             <header>
@@ -79,10 +103,12 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
         thumbnail: data.thumbnail,
         members: data.members,
         publishedAt: format(parseISO(data.published_at), 'd MMM yy', { locale: ptBR} ),
-        duration: data.file.duration,
         durationAsString: convertDurationToTimeString(Number(data.file.duration)),
         description: data.description,
-        url: data.file.url
+        file: { 
+            url: data.file.url,
+            duration: data.file.duration,
+        }
     }
 
     return {

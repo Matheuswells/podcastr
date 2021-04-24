@@ -1,71 +1,72 @@
-import { createContext, useState, useContext, ReactNode } from 'react'
+import { createContext, useState, ReactNode } from 'react'
 
 
 type Episode = {
-     title: string,
-     members:string,
-     thumbnail: string,
-     file: { duration: number, url: string}
+  id: string,
+  title: string,
+  members:string,
+  thumbnail: string,
+  file: { duration: number, url: string}
 }
 
 
 type PlayerContextData = {
-    episodeList: Array<Episode>,
-    currentEpisodeIndex: number, 
-    isPlaying: boolean,
-    play: (episode: Episode) => void,
-    setPlayingState: (state: boolean) => void
-    togglePlay: () => void,
+  episodeList: Array<Episode>,
+  currentEpisodeIndex: number, 
+  isPlaying: boolean,
+  play: (episode: Episode) => void,
+  setPlayingState: (state: boolean) => void
+  togglePlay: () => void,
 }
 
 export const PlayerContext = createContext({} as PlayerContextData)
 
 
 type PlayerContextProviderProps =  {
-    children: ReactNode
-
+  children: ReactNode
+  
 }
 
 export function PlayerContextProvider ({ children }: PlayerContextProviderProps) {
+  
+  const [ episodeList, setEpisodeList ] = useState([])
+  const [ currentEpisodeIndex, setCurrentEpisodeIndex ] = useState(0)
+  const [ isPlaying, setIsPlaying ] = useState(false)
+  
+  
+  function play(episode){
+    setEpisodeList([episode])
+    setCurrentEpisodeIndex(0)
+    setIsPlaying(true)
+  }
+  
+  function playList(list: Array<Episode>, index: number){
+    setEpisodeList(list)
+    setCurrentEpisodeIndex(index)
     
-    const [ episodeList, setEpisodeList ] = useState([])
-    const [ currentEpisodeIndex, setCurrentEpisodeIndex ] = useState(0)
-    const [ isPlaying, setIsPlaying ] = useState(false)
+  }
   
   
-    function play(episode){
-      setEpisodeList([episode])
-      setCurrentEpisodeIndex(0)
-      setIsPlaying(true)
-    }
+  function togglePlay(){
+    setIsPlaying(!isPlaying)
     
-    function playList(list: Array<Episode>, index: number){
-      setEpisodeList(list)
-      setCurrentEpisodeIndex(index)
-    
-    }
-
-
-    function togglePlay(){
-      setIsPlaying(!isPlaying)
-      
-    }
+  }
   
-    function setPlayingState(state: boolean) {
-      setIsPlaying(state)
-    }
+  function setPlayingState(state: boolean) {
+    setIsPlaying(state)
+  }
   
-    return (
-      <PlayerContext.Provider 
-      value={{ 
-          episodeList, 
-          currentEpisodeIndex, 
-          play, 
-          togglePlay, 
-          setPlayingState, 
-          isPlaying}} >
-          {children}
+  return (
+    <PlayerContext.Provider 
+    value={{ 
+      episodeList, 
+      currentEpisodeIndex, 
+      play, 
+      togglePlay, 
+      setPlayingState, 
+      isPlaying}} >
+      {children}
       </PlayerContext.Provider>
       
       )
-}
+    }

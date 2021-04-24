@@ -102,8 +102,8 @@ export default function Player(){
                         className={styles.playButton} 
                         disabled={!episode}  
                         onClick={togglePlay}>
-                        { isPlaying ? <img src="/pause.svg" alt="tocar"/>
-                         : <img src="/play.svg" alt="tocar"/>
+                        { isPlaying ? <img src="/pause.svg" alt="Pausar episdio"/>
+                         : <img src="/play.svg" alt="Tocar Episodio"/>
                          }
                    </button>
                    <button type="button" disabled={!episode}>
