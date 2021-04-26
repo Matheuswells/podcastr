@@ -1,15 +1,13 @@
 import {format, parseISO } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
 import { GetStaticPaths, GetStaticProps } from 'next'
-import { useRouter } from 'next/router'
 import { api } from '../../services/api'
 import { convertDurationToTimeString } from '../../utils/converDurationToTimeString'
 import styles from './episode.module.scss'
 import Image from 'next/image'
 import Link from 'next/link'
 import Head from 'next/head'
-import { useContext } from 'react'
-import { PlayerContext } from '../../contexts/playerContext'
+import { usePlayer } from '../../contexts/playerContext'
 
 type Episode = { 
     id : string,
@@ -29,7 +27,7 @@ type EpisodeProps = {
 
 export default function Episode({ episode }: EpisodeProps){
 
-    const { episodeList, currentEpisodeIndex, isPlaying, togglePlay, play } = useContext(PlayerContext)
+    const { episodeList, currentEpisodeIndex, isPlaying, togglePlay, play } = usePlayer()
     const currentEpisode = episodeList[currentEpisodeIndex]
     return(
         <div className={styles.episode}>
